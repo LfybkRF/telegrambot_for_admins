@@ -1,0 +1,30 @@
+} else if (text.length() > 13 && text.substring(0, 13).equals("https://t.me/")) {
+                    GetChat chat = new GetChat("@" + text.substring(13));
+                    GetChatResponse chatResponse = bot.execute(chat);
+                    String id = Long.toString(chatResponse.chat().id());
+                    if (isAdmin(id)) {
+                        if (dataBase.addChanel(chatResponse.chat().title(), id)) {
+                            request = new SendMessage(chatId, 
+                                    "Канал добавлен, можно подрочить");
+                        } else {
+                            request = new SendMessage(chatId,
+                                    "Канал не получилось добавить так как канал уже добавлен в список");
+                        }
+                    }
+                } else if (text.charAt(0) == '@') {
+                    GetChat chat = new GetChat(text);
+                    GetChatResponse chatResponse = bot.execute(chat);
+                    String id = Long.toString(chatResponse.chat().id());
+                    if (isAdmin(id)) {
+                        if (dataBase.addChanel(chatResponse.chat().title(), id)) {
+                            request = new SendMessage(chatId, 
+                                    "Канал добавлен, можно подрочить");
+                        } else {
+                            request = new SendMessage(chatId,
+                                    "Канал не получилось добавить так как канал уже добавлен в список");
+                        }
+                    }
+                    if (!isAdmin(text)) {
+                        request = new SendMessage(chatId,
+                                "Канал не получилось добавить так как бот не добавлен в канал");
+                    }
