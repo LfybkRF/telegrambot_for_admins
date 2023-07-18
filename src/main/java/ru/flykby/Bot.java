@@ -29,9 +29,10 @@ public class Bot {
     private DataBase dataBase = new DataBase();
     private List<DataBuffer> photobuffer = new ArrayList<>();
     int cooldown = 60;
-
+    Accept accept = new Accept(bot, dataBase, cooldown);
+    private boolean acceptIsWork = true;
+    
     public void serve() {
-        Accept accept = new Accept(bot, dataBase, cooldown);
         accept.start();
         bot.setUpdatesListener(updates -> {
             updates.forEach(this::process);
@@ -116,6 +117,7 @@ public class Bot {
                             
                             keyboard.addRow(keyboardButtons.toArray(new InlineKeyboardButton[2])); 
                         }
+                        
                         if (channels.size() % 2 == 0) {
                             keyboard.addRow(new InlineKeyboardButton("Закрыть Х")
                                         .callbackData("close_menu"));
@@ -157,7 +159,15 @@ public class Bot {
                         .callbackData("timer_3600"));
                     keyboard.addRow(keyboardButtons.toArray(new InlineKeyboardButton[2])); 
                     keyboardButtons.clear();
-                
+
+                    if (acceptIsWork == true) {
+                            keyboard.addRow(new InlineKeyboardButton("Отключить X")
+                                        .callbackData("accept_close"));
+                        } else {
+                            keyboard.addRow(new InlineKeyboardButton("Включить V")
+                                        .callbackData("accept_start"));
+                    }
+                    
                     keyboard.addRow(new InlineKeyboardButton("Закрыть Х")
                                 .callbackData("close_menu"));
                     
@@ -274,6 +284,20 @@ public class Bot {
                 } else if (callback.data().substring(0, 6).equals("timer_")) {
                     cooldown = Integer.parseInt(callback.data().substring(6));
                     request = new SendMessage(callback.message().chat().id(), "Новый таймер установлен!");
+
+                } else if (callback.data().substring(0, 7).equals("accept_")) {
+                    String doing = callback.data().substring(7);
+                    if (doing.equals("start")) {
+                        acceptIsWork = true;
+                        accept.restart();
+                        request = new SendMessage(callback.message().chat().id(), "ОтлогоПриниматель Запущен");
+                    } else {
+                        acceptIsWork = false;
+                        accept.pause();
+                        request = new SendMessage(callback.message().chat().id(), "ОтлогоПриниматель Остановлен");
+                    }
+                    bot.execute(request);
+                    request = new DeleteMessage(callback.message().chat().id(), callback.message().messageId());
                 } else if (callback.data().substring(0, 7).equals("delete_")) {
                     dataBase.deletePost(Integer.parseInt(callback.data().substring(7)));
                     request = new DeleteMessage(callback.message().chat().id(), callback.message().messageId());
