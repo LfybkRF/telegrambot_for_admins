@@ -200,7 +200,7 @@ public class Bot {
                     request = new SendMessage(chatId, msg).replyMarkup(keyboard);
 
                 } else {
-                    String msg = "Я не ебу о чем ты, говори по делу";
+                    String msg = "Я не понимаю о чем ты, говори по делу";
                     request = new SendMessage(chatId, msg);
                 }
 
