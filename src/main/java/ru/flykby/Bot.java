@@ -25,7 +25,7 @@ import ru.flykby.entities.DataChannel;
 import ru.flykby.entities.DataPosting;
 
 public class Bot {
-    private final TelegramBot bot = new TelegramBot("6302821997:AAFCKNIancc9qehKvNdOEkVab_Tqq_u75EI");
+    private final TelegramBot bot = new TelegramBot("TOKEN");
     private DataBase dataBase = new DataBase();
     private List<DataBuffer> photobuffer = new ArrayList<>();
     int cooldown = 60;
